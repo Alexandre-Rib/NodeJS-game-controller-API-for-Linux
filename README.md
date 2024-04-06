@@ -44,6 +44,9 @@ Thank to them!
 	- GameController.js
 	- input.js, porting of C constants, found in Python code
 	- ioctl_macros_and_constants.js , porting of C macros for ioctl function. Currently not implemented in ioctl-napi NodeJs library :-(
+ 	- (**Optionnal**) Folder with json file of buttons and axes mapping (see the example in folder "json")
+
+
 
 3) Try it !
 
