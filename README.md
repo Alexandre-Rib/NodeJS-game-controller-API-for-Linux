@@ -20,16 +20,18 @@ Based on works of :
 
 Thank to them!
 
+**Dependencie(s)**
+
+- ioctl-napi, version 0.3.0.
+	
+	This library communicates with game controller Linux' driver. In C language, to communicate with driver, we use "ioctl" function.
+
+
 **HOW TO USE**
 
-1) Dependencie(s)
 
-	- ioctl-napi, version 0.3.0
 
-	This library communicates with game controller Linux' driver.
-	In C language, to communicate with driver, we use "ioctl" function.
-
-2) Get Character device path of game controller
+1) Get Character device path of game controller
 
  	- If plugged, unplug your game controller
   	- Then have a look, with **ls** command, on the folder /dev/input/.
@@ -38,19 +40,18 @@ Thank to them!
   	- A new JSx file should have appared -> Memorize the path, it's necessary to create a GameController object
 	
 
-3) Needed files
+2) Needed files
 
 	In the same folder, have the following files :
 	- GameController.js
 	- input.js, porting of C constants, found in Python code
 	- ioctl_macros_and_constants.js , porting of C macros for ioctl function. Currently not implemented in ioctl-napi NodeJs library :-(
 
-	**Optionnal**, choose your path
-   	- json file of buttons and axes mapping (see the example in folder "json").
-
-
-
-3) Try it !
+3) Optionnal files
+   	
+	- json file of buttons and axes mapping (see the example in folder "json").
+     
+4) Try it !
 
 	In your nodeJs script, create a GameController object with the character device path of your controller. Then catch events 'GameControllerEvent'.
 
