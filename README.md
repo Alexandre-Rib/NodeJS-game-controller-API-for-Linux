@@ -45,7 +45,7 @@ Thank to them!
 	- input.js, porting of C constants, found in Python code
 	- ioctl_macros_and_constants.js , porting of C macros for ioctl function. Currently not implemented in ioctl-napi NodeJs library :-(
 
-	**Optionnal**, chhose your path
+	**Optionnal**, choose your path
    	- json file of buttons and axes mapping (see the example in folder "json").
 
 
