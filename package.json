@@ -1,0 +1,24 @@
+{
+  "name": "Gamecontroller-API-For-Linux",
+  "version": "0.9.9",
+  "description": "porting of C API and xbox360controller python Lib for game controller on linux",
+  "main": "GameController.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "C",
+    "API",
+	"Python",	
+    "Joystick",
+	"Game controller",
+    "Linux",
+    "porting"
+  ],
+  "author": "Alexandre Ribault",
+  "license": "GPL_v3",
+  "dependencies": {
+    "ioctl-napi": "^0.3.0"
+  }
+}

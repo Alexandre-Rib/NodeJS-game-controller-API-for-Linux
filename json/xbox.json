@@ -1,0 +1,26 @@
+{
+	"buttons" : {
+		"_0" : "A",
+		"_1" : "B",
+		"_2" : "X",
+		"_3" : "Y",
+		"_4" : "LB",
+		"_5" : "RB",
+		"_6" : "Back",
+		"_7" : "Start",
+		"_8" : "Xbox",
+		"_9" : "LeftStickButton",
+		"_10": "RightStickButton"
+	},
+	
+	"axes" : {
+		"_0" : "LeftJoystick_Axis_X",
+		"_1" : "LeftJoystick_Axis_Y",
+		"_2" : "LeftTrigger",
+		"_3" : "RightJoystick_Axis_X",
+		"_4" : "RightJoystick_Axis_Y",
+		"_5" : "RightTrigger",
+		"_6" : "HAT_Axis_X",
+		"_7" : "HAT_Axis_Y"
+	}
+}
