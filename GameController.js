@@ -4,8 +4,8 @@
 /* Author 		: Alexandre Ribault, AlexandreRibault87@Gmail.com           */
 /*					https://github.com/Alexandre-Rib						*/
 /* Creation		: 10/03/2024                                                */
-/* Last update	: 03/23/2024												*/
-/* Version		: 1.0.0                                                  	*/
+/* Last update	: 04/07/2024												*/
+/* Version		: 0.9.9                                                  	*/
 /****************************************************************************/
 /*                                                                          */
 /*					DISPLAYING OPTIMISED FOR NOTEPAD++                      */
@@ -49,7 +49,7 @@
 
 /*
 	Historic :
-		Version 1.0.0 : Creation of this file
+		Version 0.9.9 : Creation of this file
 */
 		
 /**************************************************/
@@ -297,16 +297,26 @@ export class GameController extends EventEmitter{
 		fs.closeSync(this.fileDescriptor)		
 		
 		this.ButtonsList = Array(this.buttonsNumber)
-		for(let i =0; i<  this.ButtonsList.length; i++){			
-			//this.ButtonsList[i]= new Button(i,`button_${i}`)
-			this.ButtonsList[i]	= new Button(i,this.gameControllerMapping.buttons[`_${i}`]	!= null ? this.gameControllerMapping.buttons[`_${i}`] : `button_${i}`)
-		}		
-		
 		this.AxesList = Array(this.axesNumber)
-		for(let i =0; i<  this.AxesList.length; i++){
-			//this.AxesList[i]= new Axis(`Axis_${i}`)
-			this.AxesList[i]	= new Axis(i,this.gameControllerMapping.axes[`_${i}`]		!= null ? this.gameControllerMapping.axes[`_${i}`] : `axis_${i}`)			
-		}		
+		
+		if (this.gameControllerMapping!= null){
+			for(let i =0; i<  this.ButtonsList.length; i++){
+				this.ButtonsList[i]	= new Button(i,this.gameControllerMapping.buttons[`_${i}`]	!= null ? this.gameControllerMapping.buttons[`_${i}`] : `button_${i}`)
+			}			
+			
+			for(let i =0; i<  this.AxesList.length; i++){				
+				this.AxesList[i]	= new Axis(i,this.gameControllerMapping.axes[`_${i}`]		!= null ? this.gameControllerMapping.axes[`_${i}`] : `axis_${i}`)			
+			}
+		} else {
+			for(let i =0; i<  this.ButtonsList.length; i++){				
+				this.ButtonsList[i]	= new Button(i,`button_${i}`)
+			}
+			
+			for(let i =0; i<  this.AxesList.length; i++){
+				this.AxesList[i]= new Axis(i,`Axis_${i}`)
+			}		
+		}
+		
 		
 		this.lastEvent ={
 			time		:0,
@@ -378,6 +388,11 @@ export class GameController extends EventEmitter{
 	* No return Value	
 	*/	
 	vibrate(leftMotorPercentage, rightMotorPercentage, duration){
+		
+		/*
+		 ! Currently in developement !		
+		*/
+		
         if (this.hasRumble){
 			
 			if (leftMotorPercentage > 1){
@@ -407,54 +422,6 @@ export class GameController extends EventEmitter{
 			console.log(this.eventFilePath);			
 			fs.writeFileSync("./essai.txt", "abcd")
 				// file written successfully
-			
-				
-			/*
-			if (fs.writeFileSync(this.eventFile, "abcd") == -1){
-				return false
-			}
-			*/			
-			/*
-						
-			if self._eventFilePath.write(stop) == -1:
-				return False
-			
-			self._eventFilePath.flush()
-			
-			
-			self._ff_id = int.from_bytes(buf[1:3], 'big')		
-			
-			*/
-			/*
-			left_abs = int(left*)
-			right_abs = int(right*65535)
-
-			stop = input_event(EV_FF, self._ff_id, 0)
-			if self._eventFilePath.write(stop) == -1:
-				return False
-			self._eventFilePath.flush()
-
-			effect = ff_effect(FF_RUMBLE, -1, duration, 0, left_abs, right_abs)
-			try:
-				buf = ioctl(self._eventFilePath, EVIOCSFF, effect)
-			except OSError:
-				# Heavy usage yields a
-				# [Errno 28] No space left on device
-				# Simply reset and continue rumbling :)
-				self._ff_id = -1
-				self._eventFilePath.close()
-				self._eventFilePath = open(self._get_eventFilePath(), 'wb')
-				return self.set_rumble(left, right, duration)
-
-			self._ff_id = int.from_bytes(buf[1:3], 'big')
-
-			play = input_event(EV_FF, self._ff_id, 1)
-			if self._eventFilePath.write(play) == -1:
-				return False
-			self._eventFilePath.flush()
-
-			return True
-			*/
 		}
 	}
 	
@@ -481,9 +448,9 @@ export class GameController extends EventEmitter{
 	/** 	
 	*  Rise JS event after having memorized button state
 	*/
-	buttonManagement(){		
-		this.ButtonsList[this.lastEvent.elementID].setState(this.lastEvent.value >= 1 ? true : false)
-		this.vibrate(0.5, 0.5, 2)
+	buttonManagement(){
+		const button = this.lastEvent.elementID		
+		this.ButtonsList[button].setState(this.lastEvent.value >= 1 ? true : false)		
 		this.emit('GameControllerEvent', this);
 	}
 
@@ -525,16 +492,14 @@ export class GameController extends EventEmitter{
 			"buttons" :{},			
 			"axes" :{}			
 		}
-		
-		if (this.gameControllerMapping != null){
-			for(let i =0; i<  this.ButtonsList.length; i++){
-				controllerState.buttons[`${this.ButtonsList[i].name}`] = this.ButtonsList[i].state
-			}
+
+		for(let i =0; i<  this.ButtonsList.length; i++){
+			controllerState.buttons[`${this.ButtonsList[i].name}`] = this.ButtonsList[i].state
+		}
 			
-			for(let i =0; i<  this.AxesList.length; i++){
-				controllerState.axes[`${this.AxesList[i].name}`] = this.AxesList[i].value
-			}		
-		}	
+		for(let i =0; i<  this.AxesList.length; i++){
+			controllerState.axes[`${this.AxesList[i].name}`] = this.AxesList[i].value
+		}		
 		
 		return controllerState
 	}	
