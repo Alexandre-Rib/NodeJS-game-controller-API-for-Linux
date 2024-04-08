@@ -1,12 +1,13 @@
 /****************************************************************************/
-/* Name		: example_1_NewGameController.js							 	*/
+/* Name		: example_2_NewGameController_wit_hButtons_Names.js				*/
 /* Function : Simple implementation	a object from GameController class		*/
+/*			  with json file for mapping									*/
 /* Author 	: Alexandre Ribault                                             */
 /* Creation : 04/06/2024                                                    */
 /* Version	: 1.0.0                                                         */
 /****************************************************************************/
 /*                                                                          */
-/*					DISPLAYING OPTIMISED FOR NOTEPAD++                      */
+/*						DISPLAY OPTIMISED FOR NOTEPAD++                     */
 /*                                                                          */
 /****************************************************************************/
 		

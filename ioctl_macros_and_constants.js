@@ -7,7 +7,7 @@
 /* Version	: 1.0.0                                                         */
 /****************************************************************************/
 /*                                                                          */
-/*					DISPLAYING OPTIMISED FOR NOTEPAD++                      */
+/*					DISPLAY OPTIMISED FOR NOTEPAD++		                    */
 /*                                                                          */
 /****************************************************************************/
 
@@ -23,7 +23,7 @@
 /*
 	Historic :
 		Version 1.0.0 :
-			Creation of the file input.js
+			Creation of the file ioctl_macros_and_constants.js
 */
 
 export const _IOC_NRBITS	= 8
