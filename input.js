@@ -124,7 +124,6 @@ export const EVIOCSFF = ioctl_macros_and_constants._IOW('E', 0x80, 48)  //48
 /*                                                	*/
 /****************************************************/
 
-
 /****************************************************/
 /* Name		:EVIOCGBIT	                          	*/
 /* Purpose	:determine the types of features/event	*/
@@ -133,7 +132,7 @@ export const EVIOCSFF = ioctl_macros_and_constants._IOW('E', 0x80, 48)  //48
 /*	- {Number} event 		 			          	*/
 /*  - {Number} length                             	*/
 /* Output(s)                                       	*/
-/*  - {Number} 	
+/*  - {Number} 										*/
 /****************************************************/
 /** 
  * @param {Number} event 
@@ -144,13 +143,55 @@ export function EVIOCGBIT(event, length){
 	return ioctl_macros_and_constants._IOC(ioctl_macros_and_constants._IOC_READ , 'E', 0x20 + event, length) // 69 -> Ascii code for 'E'
 }
 
-//https://github.com/torvalds/linux/blob/master/include/uapi/linux/input.h#L433
+/** 
+ * @param {Number} type_ 
+ * @param {Number} id_
+ * @param {Number} replay_lenght
+ * @param {Number} replay_delay
+ * @param {Number} strong_magnitude
+ * @param {Number} weak_magnitude
+ * @returns {struct} it's a Byte array which contains the values of all the functions parameters
+ */ 
+// port from https://github.com/torvalds/linux/blob/master/include/uapi/linux/input.h#L433
 export function ff_effect(type_, id_, replay_lenght, replay_delay, strong_magnitude,weak_magnitude){
+	// to better understand the string '2h6x2h2x2H28x', please check the python's Struct Library documentation at : https://docs.python.org/3/library/struct.html
+	// The can analysed this way :
+	// 2h => Buffer must contains at least the size to code 2 "h" variable. A "h" variable is a "short" which needs 2 Bytes to be coded. We need 2 h -> We need 4 Bytes
+	// 6x => Buffer must contains at least the size to 'code' 2 "x" variable. A "x" variable is an unused byte. We need 6 x -> We need 6 Bytes
+	// 2h => Buffer must contains at least the size to code 2 "h" variable. A "h" variable is a "short" which needs 2 Bytes to be coded. We need 2 h -> We need 4 Bytes
+	// 2x => Buffer must contains at least the size to 'code' 2 "x" variable. A "x" variable is an unused byte. We need 2 x -> We need 2 Bytes
+	// 2H => Buffer must contains at least the size to code 2 "H" variable. A "H" variable is an " unsigned short" which needs 2 Bytes to be coded. We need 2 H -> We need 4 Bytes
+	// 28x => Buffer must contains at least the size to 'code' 28 "x" variable. A "x" variable is an unused byte. We need 28 x -> We need 28 Bytes
+	// type_			is a long
+	// id_				is a long
+	// replay_lenght	is a short
+	// replay_delay		is a short
+	// strong_magnitude is an unsigned short
+	// weak_magnitude	is an unsigned short	
 	return struct.pack('2h6x2h2x2H28x', type_, id_, replay_lenght, replay_delay, strong_magnitude, weak_magnitude)
 }
 
 
-//https://github.com/torvalds/linux/blob/master/include/uapi/linux/input.h#L26
+/** 
+ * @param {Number} type_ 
+ * @param {Number} code
+ * @param {Number} value
+ * @param {Number} tv_sec
+ * @param {Number} tv_usec
+ * @returns {struct} it's a Byte array which contains the values of all the functions parameters
+ */ 
+
+//port from https://github.com/torvalds/linux/blob/master/include/uapi/linux/input.h#L26
 export function input_event(type_, code, value, tv_sec=0, tv_usec=0){
+	// to better understand the string '2q2hi', please check the python's Struct Library documentation at : https://docs.python.org/3/library/struct.html
+	// The can analysed this way :
+	// 2q => Buffer must contains at least the size to code 2 "q" variable. A "q" variable is a "long long" which needs 8 Bytes to be coded. We need 2 q -> We need 16 Bytes
+	// 2h => Buffer must contains at least the size to code 2 "l" variable. A "q" variable is a "long" which needs 4 Bytes to be coded. We need 2 l -> We need 8 Bytes	
+	// i  => Buffer must contains at least the size to code 1 "i" variable. A "i" variable is a "int" which needs 4 Bytes to be coded. We need 1 i -> We need 4 Bytes
+	// tv_sec	is a long long	 	
+	// tv_usec	is a long long	 	
+	// type_	is a long
+	// code		is a long
+	// value	is a int
     return struct.pack('2q2hi', tv_sec, tv_usec, type_, code, value)
 }
