@@ -36,6 +36,7 @@
 /*                                                */
 /**************************************************/
 import * as ioctl_macros_and_constants from './ioctl_macros_and_constants.js'
+import struct from 'python-struct'
 
 /**************************************************/
 /*	                                              */
@@ -113,6 +114,8 @@ export const ABS_TOOL_WIDTH = 0x1c
 export const ABS_VOLUME		= 0x20
 export const ABS_MISC		= 0x28
 
+export const EVIOCSFF = ioctl_macros_and_constants._IOW('E', 0x80, 48)  //48
+
 /****************************************************/
 /*	                                              	*/
 /*                                                	*/
@@ -139,4 +142,15 @@ export const ABS_MISC		= 0x28
  */ 
 export function EVIOCGBIT(event, length){	 
 	return ioctl_macros_and_constants._IOC(ioctl_macros_and_constants._IOC_READ , 'E', 0x20 + event, length) // 69 -> Ascii code for 'E'
+}
+
+//https://github.com/torvalds/linux/blob/master/include/uapi/linux/input.h#L433
+export function ff_effect(type_, id_, replay_lenght, replay_delay, strong_magnitude,weak_magnitude){
+	return struct.pack('2h6x2h2x2H28x', type_, id_, replay_lenght, replay_delay, strong_magnitude, weak_magnitude)
+}
+
+
+//https://github.com/torvalds/linux/blob/master/include/uapi/linux/input.h#L26
+export function input_event(type_, code, value, tv_sec=0, tv_usec=0){
+    return struct.pack('2q2hi', tv_sec, tv_usec, type_, code, value)
 }

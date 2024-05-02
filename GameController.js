@@ -184,15 +184,44 @@ const JS_EVENT_INIT					= 0x80
 /**
 * bufferToInt64 permit convert a Buffer to a int in 64 bit. Method not available in Buffer's class :-(
 * @param {Buffer} Buffer ideally of maximum 8 bytes length. If buffer contains more than 8 bytes, they will be ignored
+* @param {string} endianness Can only be "little' or 'big'
 * @return {Number} value of a int on 64 bit
 */
-function bufferToInt64(buffer){	
-	const length = 	buffer.length > 8  ? 8 :  buffer.length 
+function bufferToInt64(buffer, endianness){
 	
-	var sum = 0
-	for (var i = 0 ; i< (buffer.length) ;i++){	
-		sum += buffer[i] * 256 ** i		
+	if  (typeof endianness == "undefined"){		
+		endianness= 'little'
 	}
+	
+	if (typeof endianness == "string"){
+		endianness.toLowerCase()
+	}else{
+		throw new Error(`endianness is not a string`)
+	}
+
+	const length = 	buffer.length > 8  ? 8 :  buffer.length 
+	var sum = 0
+	
+	switch(endianness){
+		
+		case 'little':
+			for (var i = 0 ; i< (buffer.length) ;i++){	
+				sum += buffer[i] * 256 ** i		
+			}
+
+		break
+		
+		case 'big':
+			for (var i = 0 ; i< (buffer.length) ;i++){	
+				sum += buffer[buffer.length-1-i] * 256 ** i
+			}
+
+		break
+		
+		default:
+			throw new Error(`endianness value can only be 'big' or 'little'`)
+	}	
+	
 	return sum
 }
 
@@ -238,13 +267,7 @@ export class GameController extends EventEmitter{
      * @param  {String} JsonMappingFilePath path to a normalized JSON file which permits to help to determine . For for information  see ??? ( Documentation currently not written)
      */
 	constructor(characterDevicePath,axisThresholdPercentage = 0.2, JsonMappingFilePath = null) {
-		super();		
-		
-		
-		this.eventNB = 0 // TO DELETE !!!
-		
-		
-		
+		super();	
 		
 		this.characterDevicePath	= characterDevicePath
 
@@ -355,7 +378,7 @@ export class GameController extends EventEmitter{
 		/* Extract the second Int in Buffer*/
 		const orderedBufferHasFF = Buffer.copyBytesFrom(bufferHasFF, 8, uint64_t);		// 8 for 8th Bytes in Buffer				
 		
-		//operation to send the bit which permits to know if the controller can vibrate,to the LSB position. Then erases all others bits			
+		//operation to send the bit which permits to know if the controller can rumble,to the LSB position. Then erases all others bits			
 		if (bufferToInt64(orderedBufferHasFF) >> FF_RUMBLE %(uint64_t * NUMBER_OF_BIT_IN_BYTE) & 0x1 === 1)
 			return true
 		else
@@ -387,11 +410,7 @@ export class GameController extends EventEmitter{
 	* @param {Number} duration Duration of Rumble in milliseconds
 	* No return Value	
 	*/	
-	vibrate(leftMotorPercentage, rightMotorPercentage, duration){
-		
-		/*
-		 ! Currently in developement !		
-		*/
+	rumble(leftMotorPercentage, rightMotorPercentage, duration){
 		
         if (this.hasRumble){
 			
@@ -413,15 +432,37 @@ export class GameController extends EventEmitter{
 
 			duration= Math.abs(duration)			
 			
-			var left_abs = leftMotorPercentage*MAX_VALUE_UINT16
-			var right_abs = rightMotorPercentage*MAX_VALUE_UINT16
+			var left_abs = Math.abs(Math.trunc(leftMotorPercentage*MAX_VALUE_UINT16))
+			var right_abs = Math.abs(Math.trunc(rightMotorPercentage*MAX_VALUE_UINT16))
 			
-			var stop =  new Buffer.from([input.EV_FF,this._ff_id, 0])
+			var stop =  input.input_event(input.EV_FF, this._ff_id, 0)			
 			
-			//if (this.eventFile.write(stop) == -1){
-			console.log(this.eventFilePath);			
-			fs.writeFileSync("./essai.txt", "abcd")
-				// file written successfully
+			if (fs.writeFileSync(this.eventFilePath, stop)==-1){
+				return false			
+			}
+
+			const effect = input.ff_effect(FF_RUMBLE, -1, duration, 0, left_abs, right_abs)
+			
+			try{
+				ioctl(this.eventFile, input.EVIOCSFF, effect)
+			}catch{
+				this._ff_id = -1				
+				fs.closeSync(this.eventFile)
+				this.eventFile	= fs.openSync(this.eventFilePath, fs.constants.O_RDWR)
+				return this.rumble(leftMotorPercentage, rightMotorPercentage, duration)				
+			}
+
+			this._ff_id= bufferToInt64(effect.subarray(1, 3), 'big')
+			
+			var play =  input.input_event(input.EV_FF, this._ff_id, 1)
+			
+			if (fs.writeFileSync(this.eventFilePath, play)==-1){			
+				return false			
+			}
+			
+			return true
+			
+			
 		}
 	}
 	

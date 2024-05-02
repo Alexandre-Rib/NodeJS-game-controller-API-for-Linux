@@ -10,15 +10,16 @@
   "keywords": [
     "C",
     "API",
-	"Python",	
+    "Python",
     "Joystick",
-	"Game controller",
+    "Game controller",
     "Linux",
     "porting"
   ],
   "author": "Alexandre Ribault",
   "license": "GPL_v3",
   "dependencies": {
-    "ioctl-napi": "^0.3.0"
+    "ioctl-napi": "^0.3.0",
+    "python-struct": "^1.1.3"
   }
 }
