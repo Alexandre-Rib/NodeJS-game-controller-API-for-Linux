@@ -1,5 +1,5 @@
 # NodeJS-game-controller-API-for-Linux
-Porting of C and Python Librarys to NodeJs, to read recent game controllers' inputs
+Porting of C and Python Librarys to NodeJs, to read recent game controllers' inputs and also to rumble comntroller, when it's possible.
 
 Based on works of :
 - Ragnar Hojland Espinosa (Joystick API Documentation in C, no license identified)	
@@ -25,6 +25,10 @@ Thank to them!
 - ioctl-napi, version 0.3.0.
 	
 	This library communicates with game controller Linux' driver. In C language, to communicate with driver, we use "ioctl" function.
+
+- python-struct, version 1.1.3
+
+   	This library permits to facilitate data transmission to controller driver by creating Bytes Array with a kind of variables definitions. As its name indicate it, it's a port  the struct library from Python.
 
 
 **HOW TO USE**
