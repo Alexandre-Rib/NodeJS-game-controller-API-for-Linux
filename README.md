@@ -26,7 +26,7 @@ Thank to them!
 	
 	This library communicates with game controller Linux' driver. In C language, to communicate with driver, we use "ioctl" function.
 
-- python-struct, versio, 1.1.3
+- python-struct, version 1.1.3
 
    	This library permits to facilitate data transmission to controller driver by creating Bytes Array with a kind of variables definitions. As its name indicate it, it's a port  the struct library from Python.
 
