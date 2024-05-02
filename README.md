@@ -1,5 +1,5 @@
 # NodeJS-game-controller-API-for-Linux
-Porting of C and Python Librarys to NodeJs, to read recent game controllers' inputs
+Porting of C and Python Librarys to NodeJs, to read recent game controllers' inputs and also to rumble comntroller, when it's possible.
 
 Based on works of :
 - Ragnar Hojland Espinosa (Joystick API Documentation in C, no license identified)	
